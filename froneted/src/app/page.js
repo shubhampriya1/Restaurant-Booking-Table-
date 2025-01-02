@@ -89,32 +89,30 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-gray-100 via-blue-50 to-gray-100 p-4">
-      <h1 className="text-4xl font-bold text-center text-gray-800 mb-6">
+    <div className="min-h-screen bg-gradient-to-r from-gray-900 via-blue-800 to-gray-900 p-4 text-white">
+      <h1 className="text-4xl font-bold text-center mb-6">
         Restaurant Table Booking System
       </h1>
 
       {/* Booking Form */}
       <form
         onSubmit={handleSubmit}
-        className="bg-white shadow-lg rounded-lg p-8 max-w-lg mx-auto mb-10 border border-gray-200"
+        className="bg-gray-800 shadow-lg rounded-lg p-8 max-w-lg mx-auto mb-10 border border-gray-700"
       >
-        <h2 className="text-2xl font-semibold mb-6 text-gray-800">
-          Book a Table
-        </h2>
+        <h2 className="text-2xl font-semibold mb-6">Book a Table</h2>
         <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-2">Name</label>
+          <label className="block text-gray-300 font-medium mb-2">Name</label>
           <input
             type="text"
             name="name"
             value={formData.name}
             onChange={handleInputChange}
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-gray-600 rounded-lg px-4 py-2 bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter your name"
           />
         </div>
         <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-2">
+          <label className="block text-gray-300 font-medium mb-2">
             Contact
           </label>
           <input
@@ -122,27 +120,27 @@ export default function Home() {
             name="contact"
             value={formData.contact}
             onChange={handleInputChange}
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-gray-600 rounded-lg px-4 py-2 bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter your contact details"
           />
         </div>
         <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-2">Date</label>
+          <label className="block text-gray-300 font-medium mb-2">Date</label>
           <input
             type="date"
             name="date"
             value={formData.date}
             onChange={handleInputChange}
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-gray-600 rounded-lg px-4 py-2 bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
         <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-2">Time</label>
+          <label className="block text-gray-300 font-medium mb-2">Time</label>
           <select
             name="time"
             value={formData.time}
             onChange={handleInputChange}
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-gray-600 rounded-lg px-4 py-2 bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">Select Time</option>
             {availability.map(
@@ -156,7 +154,7 @@ export default function Home() {
           </select>
         </div>
         <div className="mb-6">
-          <label className="block text-gray-700 font-medium mb-2">
+          <label className="block text-gray-300 font-medium mb-2">
             Number of Guests
           </label>
           <input
@@ -164,7 +162,7 @@ export default function Home() {
             name="guests"
             value={formData.guests}
             onChange={handleInputChange}
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-gray-600 rounded-lg px-4 py-2 bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter number of guests"
           />
         </div>
@@ -177,16 +175,14 @@ export default function Home() {
       </form>
 
       {/* Availability Display */}
-      <div className="bg-white shadow-lg rounded-lg p-6 max-w-lg mx-auto mb-10">
-        <h2 className="text-2xl font-semibold mb-4 text-gray-800">
-          Availability
-        </h2>
-        <ul className="divide-y divide-gray-200">
+      <div className="bg-gray-800 shadow-lg rounded-lg p-6 max-w-lg mx-auto mb-10">
+        <h2 className="text-2xl font-semibold mb-4">Availability</h2>
+        <ul className="divide-y divide-gray-700">
           {availability.map((slot, index) => (
             <li
               key={index}
               className={`py-3 text-lg font-medium ${
-                slot.available ? "text-green-600" : "text-red-600"
+                slot.available ? "text-green-400" : "text-red-400"
               }`}
             >
               {slot.time} - {slot.available ? "Available" : "Booked"}
@@ -196,21 +192,21 @@ export default function Home() {
       </div>
 
       {/* Booking List */}
-      <div className="bg-white shadow-lg rounded-lg p-6 max-w-lg mx-auto mb-10">
-        <h2 className="text-2xl font-semibold mb-4 text-gray-800">Bookings</h2>
-        <ul className="divide-y divide-gray-200">
+      <div className="bg-gray-800 shadow-lg rounded-lg p-6 max-w-lg mx-auto mb-10">
+        <h2 className="text-2xl font-semibold mb-4">Bookings</h2>
+        <ul className="divide-y divide-gray-700">
           {bookings.map((booking) => (
             <li
               key={booking._id}
               className="py-3 flex justify-between items-center"
             >
-              <span className="text-gray-700">
+              <span>
                 {booking.name} - {booking.date} at {booking.time} for{" "}
                 {booking.guests} guests
               </span>
               <button
                 onClick={() => handleDelete(booking._id)}
-                className="text-red-600 hover:underline font-semibold"
+                className="text-red-400 hover:underline font-semibold"
               >
                 Delete
               </button>
@@ -221,23 +217,21 @@ export default function Home() {
 
       {/* Booking Summary */}
       {bookingSummary && (
-        <div className="bg-white shadow-lg rounded-lg p-6 max-w-lg mx-auto">
-          <h2 className="text-2xl font-semibold mb-4 text-gray-800">
-            Booking Summary
-          </h2>
-          <p className="text-gray-700 mb-2">
+        <div className="bg-gray-800 shadow-lg rounded-lg p-6 max-w-lg mx-auto">
+          <h2 className="text-2xl font-semibold mb-4">Booking Summary</h2>
+          <p className="mb-2">
             <strong>Name:</strong> {bookingSummary.name}
           </p>
-          <p className="text-gray-700 mb-2">
+          <p className="mb-2">
             <strong>Contact:</strong> {bookingSummary.contact}
           </p>
-          <p className="text-gray-700 mb-2">
+          <p className="mb-2">
             <strong>Date:</strong> {bookingSummary.date}
           </p>
-          <p className="text-gray-700 mb-2">
+          <p className="mb-2">
             <strong>Time:</strong> {bookingSummary.time}
           </p>
-          <p className="text-gray-700 mb-2">
+          <p className="mb-2">
             <strong>Guests:</strong> {bookingSummary.guests}
           </p>
         </div>
