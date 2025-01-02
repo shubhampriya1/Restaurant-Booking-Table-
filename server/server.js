@@ -1,51 +1,80 @@
-import express from "express";
-import mongoose from "mongoose";
-import bodyParser from "body-parser";
 import cors from "cors";
 import dotenv from "dotenv";
+import express from "express";
+import connect from "./lib/connect.js";
 import Booking from "./models/Booking.js";
 
-// Load environment variables from .env file
 dotenv.config();
 
 const app = express();
 
-// Middleware
 app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json());
 
-// MongoDB Connection
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-
-mongoose.connection.on("connected", () => {
-  console.log("Connected to MongoDB");
-});
-
-mongoose.connection.on("error", (error) => {
-  console.error("MongoDB connection error:", error);
-});
-
-// Routes
-
-// Create Booking
 app.post("/api/bookings", async (req, res) => {
   try {
+    const { date, time, hours } = req.body;
+
+    if (!date || !time || !hours) {
+      return res.status(400).json({
+        message: "Date, time, and hours are required.",
+      });
+    }
+
+    const bookingStartTime = new Date(`${date}T${time}`);
+    const bookingEndTime = new Date(bookingStartTime);
+    bookingEndTime.setHours(bookingEndTime.getHours() + parseInt(hours));
+
+    const overlappingBooking = await Booking.findOne({
+      date,
+      $or: [
+        {
+          $expr: {
+            $and: [
+              { $lte: ["$time", bookingEndTime] },
+              { $gte: ["$time", bookingStartTime] },
+            ],
+          },
+        },
+      ],
+    });
+
+    if (overlappingBooking) {
+      return res.status(400).json({
+        message:
+          "A booking already exists that overlaps with the selected date, time, or duration.",
+      });
+    }
+
     const booking = new Booking(req.body);
     await booking.save();
+
     res.status(201).json(booking);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
-// Get All Bookings
 app.get("/api/bookings", async (req, res) => {
   try {
-    const bookings = await Booking.find();
-    res.status(200).json(bookings);
+    const { page = 1, limit = 10 } = req.query;
+
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+
+    const bookings = await Booking.find()
+      .sort({ _id: -1 })
+      .skip((pageNumber - 1) * limitNumber)
+      .limit(limitNumber);
+
+    const totalBookings = await Booking.countDocuments();
+
+    res.status(200).json({
+      totalBookings,
+      totalPages: Math.ceil(totalBookings / limitNumber),
+      currentPage: pageNumber,
+      bookings,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -69,6 +98,14 @@ app.get("/", (req, res) => {
 
 // Start the Server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+(async () => {
+  connect()
+    .then(() => {
+      app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
+      });
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+})();

@@ -20,6 +20,11 @@ const bookingSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
+  hours: {
+    type: Number,
+    required: true,
+    min: 1,
+  },
   contact: {
     type: String,
     required: true,
